@@ -3,7 +3,7 @@ import time
 import RPi.GPIO as GPIO
 import threading
 
-currentRefreshRate = 3000
+currentRefreshRate = 100
 
 GPIO.setmode(GPIO.BOARD)
 pinList=[False]
@@ -108,6 +108,7 @@ def gui():
 
     rowNumber = ''
     columnNumber = ''
+    colorDict = {'High':'Red','Low':'Blue','GPIO.IN':'Green','GPIO.OUT':'Purple','GPIO':'Purple'}
     
     def populateTable(pinNum):
         cPin = pinList[pinNum]
@@ -128,17 +129,20 @@ def gui():
                 gridCell('PNS',3,pinNum)
                 gridCell(cPin.voltage, 4)
             else:
-                gridCell(cPin.usage,3)
-                gridCell(cPin.voltage, 4)
+                gridCell(cPin.usage,3,colorDict[cPin.usage.value])
+                gridCell(cPin.voltage, 4,colorDict[cPin.voltage.value])
         
-    def gridCell (attribute, columnOffset,*arg):
+    def gridCell (attribute, columnOffset,*colorChoice):
         global rowNumber, columnNumber
+        color = 'Black'
+        if colorChoice:
+            color = colorChoice
         if attribute.address==False:
-            attribute.address=tkinter.Label(pinGrid,text='%s'%(attribute.value),borderwidth=1)
+            attribute.address=tkinter.Label(pinGrid,text='%s'%(attribute.value),fg=color,borderwidth=1)
             attribute.address.grid(row=rowNumber+pinRowOffset,column =columnNumber+columnOffset+pinColumnOffset)
         else:
             if attribute.value != attribute.address["text"]:
-                attribute.address.config(text='%s'%(attribute.value))
+                attribute.address.config(text='%s'%(attribute.value),fg=color)
 
     def checkAndPopulate():
         checkAllPins()
