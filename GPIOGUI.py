@@ -1,7 +1,6 @@
 import tkinter
 import time
 import RPi.GPIO as GPIO
-import threading
 
 currentRefreshRate = 100
 
@@ -221,8 +220,7 @@ def gui():
 ##    pinEntry.grid(row=menuRow,column= menuColumn)
     
     checkAndPopulate()
-        
     root.mainloop(  )
-t1= threading.Thread(target=gui, name='t1')
-t1.start()
+
+gui()
 
